@@ -1,0 +1,8 @@
+npm install --save react-toastify
+npm install chart.js
+npm install --save datatables.net-react datatables.net-dt
+npm install datatables.net-bs5
+npm install --save datatables.net-select-dt
+npm install --save datatables.net-responsive-dt
+npm install bootstrap@5
+npm install datatables.net jquery tailwindcss
