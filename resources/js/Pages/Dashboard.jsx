@@ -24,22 +24,36 @@ import PieChart from '@/Components/PieChart';
 //import DataList from '@/Components/DataList';
 
 //Modal
-import AddStudentButton from '@/Components/AddStudentButton';
 import DataList from '@/Components/DataList';
 
 
 export default function Dashboard() {
-    const [data, setData] = useState([]);
-    const [account, setAccount] = useState([]);
+    const [data, setData] = useState([]); //State for general data
+    const [account, setAccount] = useState([]); //State for specific data - account
        
         axios.get('/account')
           .then(response => {
-            setAccount(response.account);
+            setAccount(response.data);
           })
           .catch(error => {
             console.error('Error fetching data:', error);
           });
 
+          useEffect(() => {
+            // Start loading
+            setLoading(true);
+    
+            // Fetch data from Laravel API
+            axios.get('/data')
+              .then(response => {
+                setData(response.data);
+                setLoading(false); // Stop loading once data is fetched
+              })
+              .catch(error => {
+                console.error('Error fetching data:', error);
+                setLoading(false); // Stop loading once data is fetched
+              });
+        }, []);
 
 
     //Modal
@@ -54,21 +68,7 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(true); // Add loading state
 
 
-    useEffect(() => {
-        // Start loading
-        setLoading(true);
 
-        // Fetch data from Laravel API
-        axios.get('/data')
-          .then(response => {
-            setData(response.data);
-            setLoading(false); // Stop loading once data is fetched
-          })
-          .catch(error => {
-            console.error('Error fetching data:', error);
-            setLoading(false); // Stop loading once data is fetched
-          });
-    }, []);
       
 
     const [loadings, setLoadings] = React.useState(false);
@@ -110,13 +110,6 @@ export default function Dashboard() {
                                     </div>
                                     <span>View more →</span>
                                     </a>
-                                    <ul>
-                                        {account.map((item, index) => (
-                                        <li key={index}>
-                                            {item.id} - {item.name}
-                                        </li>
-                                        ))}
-                                    </ul>
                                     <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
                                     <div
                                         className="flex items-center p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800"
@@ -332,11 +325,6 @@ export default function Dashboard() {
                         
                             <div>
                             <h2>Data from Laravel</h2>
-                            <button type="button" className="bg-indigo-500" disabled>
-                                <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
-                                </svg>
-                                Processing...
-                            </button>
                             {loading ? (
                                 // Show loading message while data is being fetched
                                 <p>Loading...</p>
@@ -350,7 +338,18 @@ export default function Dashboard() {
                                 ))}
                                 </ul>
                             )}
-
+                            <h2>Data from Laravel - account</h2>
+                            {loading ? (
+                                <p>Loading...</p>
+                            ) : (
+                                <ul>
+                                {data.map((item, index) => (
+                                <li key={index}>
+                                    {item.id} - {item.name}
+                                </li>
+                                ))}
+                                </ul>
+                            )}
                             </div>
 
 

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class AccountController extends Controller
 {
-    public function fetchData()
+    public function fetchAccount()
     {
         // Using the DB facade to query the database
         $data = DB::table('users')
@@ -19,3 +19,5 @@ class AccountController extends Controller
     }
 
 }
+
+
