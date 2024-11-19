@@ -54,7 +54,8 @@ Route::resource('share', ShareController::class)
     ->only(['index', 'store', 'update'])
     ->middleware(['auth', 'verified']);
 
-Route::get('data', [UserController::class, 'fetchData']);
+Route::get('data/fetchdata', [UserController::class, 'fetchData']);
+Route::get('data/countuser', [UserController::class, 'countUser']);
 
 Route::get('account', [AccountController::class, 'fetchAccount']);
 

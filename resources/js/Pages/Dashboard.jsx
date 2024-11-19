@@ -30,21 +30,29 @@ import DataList from '@/Components/DataList';
 export default function Dashboard() {
     const [data, setData] = useState([]); //State for general data
     const [account, setAccount] = useState([]); //State for specific data - account
-       
+    const [count, setCount] = useState([]); //State for specific data - account   
         axios.get('/account')
           .then(response => {
             setAccount(response.data);
           })
           .catch(error => {
             console.error('Error fetching data:', error);
-          });
+        });
+
+        axios.get('/data/countuser')
+          .then(response => {
+            setCount(response.data);
+          })
+          .catch(error => {
+            console.error('Error fetching data:', error);
+        });
 
           useEffect(() => {
             // Start loading
             setLoading(true);
     
             // Fetch data from Laravel API
-            axios.get('/data')
+            axios.get('/data/fetchdata')
               .then(response => {
                 setData(response.data);
                 setLoading(false); // Stop loading once data is fetched
@@ -61,19 +69,12 @@ export default function Dashboard() {
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
-
-
-    
+ 
 
     const [loading, setLoading] = useState(true); // Add loading state
-
-
-
-      
+   
 
     const [loadings, setLoadings] = React.useState(false);
-
-
 
     return (
         
@@ -167,7 +168,7 @@ export default function Dashboard() {
                                         <p
                                             className="text-lg font-semibold text-gray-700 dark:text-gray-200"
                                         >
-                                            $ 46,760.89
+                                         { count }
                                         </p>
                                         </div>
                                     </div>
