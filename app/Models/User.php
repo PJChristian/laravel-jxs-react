@@ -33,6 +33,11 @@ class User extends Authenticatable
         return $this->hasMany((Status::class));
     }
 
+    public function feedback(): HasMany
+    {
+        return $this->hasMany((Feedback::class));
+    }
+
     /**
      * The attributes that are mass assignable.
      *

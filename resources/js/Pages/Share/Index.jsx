@@ -27,9 +27,9 @@ export default function Index({ auth, shares }) {
         post(route('share.store'), 
             { onSuccess: () => {
                 reset();
-                toast.success("Form Submitted successfully");
-                }
-            },
+                toast.success("Save successfully");
+            }
+            }, 
             { onError : () => {
                 toast.error("Form not Submitted");
             }
@@ -46,11 +46,8 @@ export default function Index({ auth, shares }) {
         <AuthenticatedLayout>
             <Head title="Share" />
             <ToastContainer
-                position="bottom-left"
+                position="top-left"
             />
-
-                                            
-
             <div className="max-w-2xl mx-auto p-4 sm:p-6 lg:p-8">
                 <form onSubmit={submit}>
                     <textarea

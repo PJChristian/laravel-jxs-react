@@ -4,9 +4,11 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ChirpController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\StatusController;
+use App\Http\Controllers\DataController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -54,8 +56,15 @@ Route::resource('share', ShareController::class)
     ->only(['index', 'store', 'update'])
     ->middleware(['auth', 'verified']);
 
+Route::resource('feedback', FeedbackController::class)
+    ->only(['index', 'store', 'update'])
+    ->middleware(['auth', 'verified']);
+
 Route::get('data/fetchdata', [UserController::class, 'fetchData']);
 Route::get('data/countuser', [UserController::class, 'countUser']);
+
+Route ::get('user/fetchdata', [DataController::class, 'fetchData']); 
+
 
 Route::get('account', [AccountController::class, 'fetchAccount']);
 

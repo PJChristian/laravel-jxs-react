@@ -1,9 +1,7 @@
 import PrimaryButton from '@/Components/PrimaryButton';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { useForm, Head } from '@inertiajs/react';
 import React, {useState, useEffect} from 'react';
-import Modal from '@/Components/Modal';
-
 import $ from 'jquery';
 
 //https://medium.com/@gtpndn/laravel-11-react-inertia-crud-modal-tutorial-in-simple-steps-63aee0f4e2dd
@@ -11,6 +9,8 @@ import $ from 'jquery';
 
 //https://fkhadra.github.io/react-toastify/introduction/
 //https://react.dev/reference/react/Suspense
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 //Chart
 //https://www.chartjs.org/docs/latest/getting-started/
@@ -23,14 +23,49 @@ import PieChart from '@/Components/PieChart';
 //https://preline.co/docs/datatables.html
 //import DataList from '@/Components/DataList';
 
+//https://transform.tools/html-to-jsx
+
+
 //Modal
+import Modal from '@/Components/Modal';
+import FeedbackModal from '@/Components/FeedbackModal';
+
+
 import DataList from '@/Components/DataList';
 
 
-export default function Dashboard() {
+export default function Dashboard() { 
     const [data, setData] = useState([]); //State for general data
+    
     const [account, setAccount] = useState([]); //State for specific data - account
-    const [count, setCount] = useState([]); //State for specific data - account   
+    const [count, setCount] = useState([]); //State for specific data - count account
+
+    const [user, setUser] = useState([]);
+
+    useEffect(() => {
+        // Start loading
+        setLoading(true);
+
+        // Fetch data from Laravel API
+        
+        axios.get('/user/fetchdata')
+        .then(response => {
+            setUser(response.data);
+            setLoading(false);
+        })
+        .catch(error => {
+            console.error('Error: ', error);
+            setLoading(false);
+        })
+    }, []);
+
+
+
+    const [showFeedback, setshowFeedback] = useState(false); // Manage visibility
+
+    const openFeedbackModal = () => {
+        setshowFeedback(true); // Show the component on button click
+    };
         axios.get('/account')
           .then(response => {
             setAccount(response.data);
@@ -63,14 +98,6 @@ export default function Dashboard() {
               });
         }, []);
 
-
-    //Modal
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
- 
-
     const [loading, setLoading] = useState(true); // Add loading state
    
 
@@ -86,7 +113,9 @@ export default function Dashboard() {
             }
         >
             <Head title="Dashboard" />
-                                
+            <ToastContainer
+                position="bottom-left"
+            />             
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
@@ -231,31 +260,14 @@ export default function Dashboard() {
                                     <div className="flex-1 p-6">
                                         <div className="flex items-center justify-between">
                                             <h1 className="text-2xl font-semibold">Data Table</h1>
-                                            <button onClick={openModal}
+                                            <button onClick={openFeedbackModal}
                                             className="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
                                             >
                                                 Create an Account
                                                 <span className="ml-2" aria-hidden="true">+</span>
                                             </button>
-
                                             
-
-                                            <Modal show={isModalOpen} onClose={closeModal} maxWidth="lg">
-                                                <div className="p-6">
-                                                    <h2 className="text-lg font-bold">Modal Title</h2>
-                                                    <p className="mt-4 text-sm text-gray-600">
-                                                        This is the content of the modal.
-                                                    </p>
-                                                    <div className="mt-6 flex justify-end">
-                                                        <button
-                                                            onClick={closeModal}
-                                                            className="px-4 py-2 text-white bg-blue-500 rounded-lg"
-                                                        >
-                                                            Close
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </Modal>
+                                            {showFeedback && <FeedbackModal />}
                                         </div>
                                     </div>
                                     
@@ -326,23 +338,12 @@ export default function Dashboard() {
                         
                             <div>
                             <h2>Data from Laravel</h2>
-                            {loading ? (
-                                // Show loading message while data is being fetched
-                                <p>Loading...</p>
-                            ) : (
-                                // Display data once it has been fetched
-                                <ul>
-                                {data.map((item, index) => (
-                                <li key={index}>
-                                    {item.id} - {item.name}
-                                </li>
-                                ))}
-                                </ul>
-                            )}
                             <h2>Data from Laravel - account</h2>
                             {loading ? (
                                 <p>Loading...</p>
                             ) : (
+
+
                                 <ul>
                                 {data.map((item, index) => (
                                 <li key={index}>
@@ -350,6 +351,7 @@ export default function Dashboard() {
                                 </li>
                                 ))}
                                 </ul>
+
                             )}
                             </div>
 
